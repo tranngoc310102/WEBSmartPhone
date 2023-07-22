@@ -1,0 +1,61 @@
+﻿@using Model.BusinessObject;
+@using Model.DataAccess;
+@model Product;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Checkout</title>
+    <link rel="stylesheet" type="text/css" href="~/css/Checkout.css">
+</head>
+<body>
+
+    <div class="mainscreen">
+        <!-- <img src="https://image.freepik.com/free-vector/purple-background-with-neon-frame_52683-34124.jpg"  class="bgimg " alt="">-->
+        <div class="card">
+            <div class="leftside">
+                <img src="@Model.ProductImg"
+                     class="product"
+                     alt="Shoes" />
+            </div>
+            @{
+                string accid = Context.Session.GetString("accid");
+                IAccountRepository accountRepository = new AccountRepository();
+                Account acc = accountRepository.GetAccount(int.Parse(accid));
+            }
+            <div class="rightside">
+                <form action="/Home/Checkout" method="post">
+                    <h1>CheckOut</h1>
+                    <p>Product Name : @Model.ProductName</p>
+                    <input type="number" name="pid" value="@Model.ProductId" style="display:none;" />
+                    Quantity: 
+                    <input type="number" name="quantity" value="1" required/><br />
+                    <p>Customer Name:</p> 
+                    <input type="text" class="inputbox" name="name" value="@acc.AccountName" required />
+                    <p>Address :</p>
+                    <input type="text" class="inputbox" name="address" value="@acc.Address" id="card_number" required />
+
+                    <p>Card Type</p>
+                    <select class="inputbox" name="card_type" id="card_type" required>
+                        <option value="">--Select a Card Type--</option>
+                        <option value="Visa">Visa</option>
+                        <option value="RuPay">RuPay</option>
+                        <option value="MasterCard">MasterCard</option>
+                    </select>
+                    <div class="expcvv">
+
+                        <p class="expcvv_text">Expiry</p>
+                        <input type="date" class="inputbox" name="exp_date" id="exp_date" required />
+
+                        <p class="expcvv_text2">CVV</p>
+                        <input type="password" class="inputbox" name="cvv" id="cvv" required />
+                    </div>
+                    <p></p>
+                    <button type="submit" class="button">CheckOut</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
